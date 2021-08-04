@@ -5,6 +5,7 @@ import { path } from './constants/path'
 import Login from './pages/Auth/Login/Login'
 import Register from './pages/Auth/Register/Register'
 import NotFound from './pages/NotFound/NotFound'
+import RegisterLayout from './components/Layouts/RegisterLayout/RegisterLayout'
 
 export default function Routes() {
   return (
@@ -13,10 +14,14 @@ export default function Routes() {
         <Home />
       </Route>
       <Route path={path.login}>
-        <Login />
+        <RegisterLayout title="Đăng Nhập">
+          <Login />
+        </RegisterLayout>
       </Route>
       <Route path={path.register}>
-        <Register />
+        <RegisterLayout title="Đăng Ký">
+          <Register />
+        </RegisterLayout>
       </Route>
       <Route path={path.notfound}>
         <NotFound />
