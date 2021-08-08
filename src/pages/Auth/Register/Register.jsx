@@ -1,11 +1,31 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useForm, Controller } from 'react-hook-form'
 import { Button } from 'src/assets/styles/utils'
 import { path } from 'src/constants/path'
 import InputText from 'src/components/InputText/InputText'
 import InputPassword from 'src/components/InputPassword/InputPassword'
+import ErrorMessage from 'src/components/ErrorMessage/ErrorMessage'
 import * as S from './register.style'
+import { rules } from 'src/constants/rules'
 export default function Register() {
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    formState: { errors }
+  } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmpassword: ''
+    }
+  })
+  const handleRegister = data => {
+    console.log(data)
+  }
+
+  console.log(errors)
   return (
     <div>
       <S.StyledRegister>
@@ -13,15 +33,58 @@ export default function Register() {
           <S.Banner />
           <S.FormWrapper>
             <S.FormTitle>Đăng ký</S.FormTitle>
-            <S.Form novalidate>
+            <S.Form onSubmit={handleSubmit(handleRegister)} noValidate>
               <S.FormControl>
-                <InputText type="email" name="email" placeholder="Email" />
+                <Controller
+                  name="email"
+                  control={control}
+                  rules={rules.email}
+                  render={({ field }) => (
+                    <InputText
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      onChange={field.onChange}
+                      value={getValues('email')}
+                    />
+                  )}
+                />
+                <ErrorMessage errors={errors} name="email" />
               </S.FormControl>
               <S.FormControl>
-                <InputPassword placeholder="Mật khẩu" name="password" />
+                <Controller
+                  name="password"
+                  control={control}
+                  rules={rules.password}
+                  render={({ field }) => (
+                    <InputPassword
+                      name="password"
+                      placeholder="Mật khẩu"
+                      onChange={field.onChange}
+                      value={getValues('password')}
+                    />
+                  )}
+                />
+                <ErrorMessage errors={errors} name="password" />
               </S.FormControl>
               <S.FormControl>
-                <InputPassword placeholder="Nhập lại mật khẩu" name="confirmpassword" />
+                <Controller
+                  name="confirmpassword"
+                  control={control}
+                  rules={{
+                    ...rules.confirmpassword,
+                    validate: { samePassword: v => v === getValues('password') || 'Mật khẩu không khớp' }
+                  }}
+                  render={({ field }) => (
+                    <InputPassword
+                      name="confirmpassword"
+                      placeholder="Nhập lại Mật khẩu"
+                      onChange={field.onChange}
+                      value={getValues('confirmpassword')}
+                    />
+                  )}
+                />
+                <ErrorMessage errors={errors} name="confirmpassword" />
               </S.FormControl>
               <S.FormButton>
                 <Button type="summit">Đăng Ký</Button>
