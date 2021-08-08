@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import { Button } from 'src/assets/styles/utils'
@@ -8,6 +8,7 @@ import InputPassword from 'src/components/InputPassword/InputPassword'
 import ErrorMessage from 'src/components/ErrorMessage/ErrorMessage'
 import * as S from './register.style'
 import { rules } from 'src/constants/rules'
+import http from 'src/utils/http'
 export default function Register() {
   const {
     control,
@@ -25,7 +26,11 @@ export default function Register() {
     console.log(data)
   }
 
-  console.log(errors)
+  useEffect(() => {
+    http.get('products').then(res => {
+      console.log(res)
+    })
+  }, [])
   return (
     <div>
       <S.StyledRegister>
