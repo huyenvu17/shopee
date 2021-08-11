@@ -38,7 +38,7 @@ class Http {
     return this.instance.get(url, config)
   }
   post(url, data, config = null) {
-    return this.instance.gepostt(url, data, config)
+    return this.instance.post(url, data, config)
   }
   put(url, data, config = null) {
     return this.instance.put(url, data, config)

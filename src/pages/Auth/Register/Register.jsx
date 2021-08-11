@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useForm, Controller } from 'react-hook-form'
 import { Button } from 'src/assets/styles/utils'
 import { path } from 'src/constants/path'
@@ -8,13 +8,16 @@ import InputPassword from 'src/components/InputPassword/InputPassword'
 import ErrorMessage from 'src/components/ErrorMessage/ErrorMessage'
 import * as S from './register.style'
 import { rules } from 'src/constants/rules'
-import http from 'src/utils/http'
+import { useDispatch } from 'react-redux'
+import { register } from '../auth.slice'
+import { unwrapResult } from '@reduxjs/toolkit'
 export default function Register() {
   const {
     control,
     handleSubmit,
     getValues,
-    formState: { errors }
+    formState: { errors },
+    setError
   } = useForm({
     defaultValues: {
       email: '',
@@ -22,15 +25,29 @@ export default function Register() {
       confirmpassword: ''
     }
   })
-  const handleRegister = data => {
-    console.log(data)
+  const dispatch = useDispatch()
+  const history = useHistory()
+  const handleRegister = async data => {
+    const body = {
+      email: data.email,
+      password: data.password
+    }
+    try {
+      const res = await dispatch(register(body))
+      unwrapResult(res)
+      history.push(path.home)
+    } catch (error) {
+      if (error.status === 422) {
+        for (const key in error.data) {
+          setError(key, {
+            type: 'server',
+            message: error.data[key]
+          })
+        }
+      }
+    }
   }
 
-  useEffect(() => {
-    http.get('products').then(res => {
-      console.log(res)
-    })
-  }, [])
   return (
     <div>
       <S.StyledRegister>
